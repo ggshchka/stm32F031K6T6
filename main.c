@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "tim.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -62,12 +63,22 @@ void SystemClock_Config(void);
   * @brief  The application entry point.
   * @retval int
   */
+
+/* USER CODE BEGIN 0 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if(htim->Instance == TIM2) //проверяем какой таймер вызвал колбек
+   {
+     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3); // переключаем пин на противоположное состояние
+   }
+}
+/* USER CODE END 0 */
+
 int main(void)
 {
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
-  
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -87,8 +98,9 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
